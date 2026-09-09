@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Company - Token Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .button-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .button-secondary:hover {
+            background: #e8e8e8;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .output {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .output.error {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .output.success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .token-display {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .token-display strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .token-display code {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            display: block;
+            overflow-x: auto;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 5px 0;
+        }
+
+        .status-badge.valid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.invalid {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+        }
+
+        .info-panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .api-example {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .api-example code {
+            color: #68d391;
+        }
+
+        .server-status {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+        }
+
+        .server-status.offline {
+            background: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐾 Animal Company</h1>
+            <p>JWT Token Manager for Mods</p>
+        </div>
+
+        <div id="serverStatus" class="server-status">
+            Checking server connection...
+        </div>
+
+        <div class="main-grid">
+            <!-- Login Card -->
+            <div class="card">
+                <h2>🔐 Login</h2>
+                <div class="form-group">
+                    <label for="playerId">Player ID</label>
+                    <input type="text" id="playerId" placeholder="e.g., player123">
+                </div>
+                <div class="form-group">
+                    <label for="modId">Mod ID</label>
+                    <input type="text" id="modId" placeholder="e.g., mod456">
+                </div>
+                <button onclick="login()">Generate Tokens</button>
+                <div id="loginOutput"></div>
+            </div>
+
+            <!-- Token Verification Card -->
+            <div class="card">
+                <h2>✅ Verify Token</h2>
+                <div class="form-group">
+                    <label for="tokenToVerify">Access Token</label>
+                    <textarea id="tokenToVerify" placeholder="Paste your JWT token here..."></textarea>
+                </div>
+                <button onclick="verifyToken()">Verify Token</button>
+                <div id="verifyOutput"></div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Refresh Token Card -->
+            <div class="card">
+                <h2>🔄 Refresh Token</h2>
+                <div class="form-group">
+                    <label for="refreshToken">Refresh Token</label>
+                    <textarea id="refreshToken" placeholder="Paste your refresh token here..."></textarea>
+                </div>
+                <button onclick="refreshToken()">Get New Access Token</button>
+                <div id="refreshOutput"></div>
+            </div>
+
+            <!-- Logout Card -->
+            <div class="card">
+                <h2>🚪 Logout</h2>
+                <div class="form-group">
+                    <label for="revokeToken">Refresh Token</label>
+                    <textarea id="revokeToken" placeholder="Paste your refresh token here..."></textarea>
+                </div>
+                <button onclick="logout()">Revoke Token</button>
+                <div id="logoutOutput"></div>
+            </div>
+        </div>
+
+        <!-- Information Panel -->
+        <div class="info-panel">
+            <h2>📖 API Documentation</h2>
+
+            <div class="info-section">
+                <h3>Base URL</h3>
+                <p id="baseUrl"></p>
+            </div>
+
+            <div class="info-section">
+                <h3>POST /auth/login</h3>
+                <p>Issue new tokens for a player/mod combination</p>
+                <div class="api-example">
+<code>curl -X POST <span id="apiUrl1">/auth/login</span> \
+  -H "Content-Type: application/json" \
+  -d '{"playerId":"player123","modId":"mod456"}'</code>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>POST /auth/refresh</h3>
+                <p>Get a new access token using a refresh token</p>
+                <div class="api-example">
+<code>curl -X POST <span id="apiUrl2">/auth/refresh</span> \
+  -H "Content-Type: application/json" \
+  -d '{"refresh_token":"your_refresh_token"}'</code>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>GET /auth/verify</h3>
+                <p>Verify and get info about current token</p>
+                <div class="api-example">
+<code>curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  <span id="apiUrl3">/auth/verify</span></code>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>POST /auth/logout</h3>
+                <p>Revoke a refresh token</p>
+                <div class="api-example">
+<code>curl -X POST <span id="apiUrl4">/auth/logout</span> \
+  -H "Content-Type: application/json" \
+  -d '{"refresh_token":"your_refresh_token"}'</code>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>GET /mods</h3>
+                <p>Get mod list for authenticated player</p>
+                <div class="api-example">
+<code>curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  <span id="apiUrl5">/mods</span></code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = localStorage.getItem('apiBase') || 'http://localhost:3000';
+
+        // Initialize API URLs
+        function initializeAPI() {
+            document.getElementById('baseUrl').textContent = API_BASE;
+            document.getElementById('apiUrl1').textContent = API_BASE + '/auth/login';
+            document.getElementById('apiUrl2').textContent = API_BASE + '/auth/refresh';
+            document.getElementById('apiUrl3').textContent = API_BASE + '/auth/verify';
+            document.getElementById('apiUrl4').textContent = API_BASE + '/auth/logout';
+            document.getElementById('apiUrl5').textContent = API_BASE + '/mods';
+            checkServerStatus();
+        }
+
+        // Check server status
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(API_BASE + '/health');
+                if (response.ok) {
+                    document.getElementById('serverStatus').innerHTML = 
+                        '✅ Server is online and ready';
+                    document.getElementById('serverStatus').classList.remove('offline');
+                } else {
+                    throw new Error('Server returned error');
+                }
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML = 
+                    '❌ Server is offline. Make sure to run: npm install && npm start';
+                document.getElementById('serverStatus').classList.add('offline');
+            }
+        }
+
+        // Login - Generate tokens
+        async function login() {
+            const playerId = document.getElementById('playerId').value;
+            const modId = document.getElementById('modId').value;
+            const output = document.getElementById('loginOutput');
+
+            if (!playerId || !modId) {
+                showError(output, 'Please enter both Player ID and Mod ID');
+                return;
+            }
+
+            showLoader(output);
+
+            try {
+                const response = await fetch(API_BASE + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ playerId, modId })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(output, data.error || 'Login failed');
+                    return;
+                }
+
+                showSuccess(output, `
+<strong>✅ Tokens Generated Successfully</strong>
+
+${formatTokenDisplay('Access Token', data.access_token)}
+${formatTokenDisplay('Refresh Token', data.refresh_token)}
+
+Token Type: ${data.token_type}
+Expires In: ${data.expires_in} seconds
+                `);
+
+                // Store tokens for later use
+                sessionStorage.setItem('accessToken', data.access_token);
+                sessionStorage.setItem('refreshToken', data.refresh_token);
+            } catch (error) {
+                showError(output, 'Network error: ' + error.message);
+            }
+        }
+
+        // Verify token
+        async function verifyToken() {
+            const token = document.getElementById('tokenToVerify').value;
+            const output = document.getElementById('verifyOutput');
+
+            if (!token) {
+                showError(output, 'Please enter a token');
+                return;
+            }
+
+            showLoader(output);
+
+            try {
+                const response = await fetch(API_BASE + '/auth/verify', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(output, data.error || 'Verification failed');
+                    return;
+                }
+
+                const validBadge = data.valid ? 
+                    '<span class="status-badge valid">✅ VALID</span>' :
+                    '<span class="status-badge invalid">❌ INVALID</span>';
+
+                showSuccess(output, `
+${validBadge}
+
+Player ID: ${data.playerId}
+Mod ID: ${data.modId}
+Token Type: ${data.type}
+Issued At: ${new Date(data.issuedAt).toLocaleString()}
+Expires At: ${new Date(data.expiresAt).toLocaleString()}
+Expired: ${data.isExpired ? 'Yes' : 'No'}
+                `);
+            } catch (error) {
+                showError(output, 'Network error: ' + error.message);
+            }
+        }
+
+        // Refresh token
+        async function refreshToken() {
+            const refreshTokenValue = document.getElementById('refreshToken').value;
+            const output = document.getElementById('refreshOutput');
+
+            if (!refreshTokenValue) {
+                showError(output, 'Please enter a refresh token');
+                return;
+            }
+
+            showLoader(output);
+
+            try {
+                const response = await fetch(API_BASE + '/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshTokenValue })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(output, data.error || 'Refresh failed');
+                    return;
+                }
+
+                showSuccess(output, `
+<strong>✅ New Access Token Generated</strong>
+
+${formatTokenDisplay('New Access Token', data.access_token)}
+${formatTokenDisplay('New Refresh Token', data.refresh_token)}
+
+Token Type: ${data.token_type}
+Expires In: ${data.expires_in} seconds
+                `);
+
+                sessionStorage.setItem('accessToken', data.access_token);
+                sessionStorage.setItem('refreshToken', data.refresh_token);
+            } catch (error) {
+                showError(output, 'Network error: ' + error.message);
+            }
+        }
+
+        // Logout
+        async function logout() {
+            const refreshTokenValue = document.getElementById('revokeToken').value;
+            const output = document.getElementById('logoutOutput');
+
+            if (!refreshTokenValue) {
+                showError(output, 'Please enter a refresh token');
+                return;
+            }
+
+            showLoader(output);
+
+            try {
+                const response = await fetch(API_BASE + '/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: refreshTokenValue })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(output, data.error || 'Logout failed');
+                    return;
+                }
+
+                showSuccess(output, `
+✅ ${data.message}
+
+The refresh token has been revoked and can no longer be used.
+                `);
+
+                sessionStorage.removeItem('refreshToken');
+            } catch (error) {
+                showError(output, 'Network error: ' + error.message);
+            }
+        }
+
+        // Helper functions
+        function formatTokenDisplay(label, token) {
+            return `<div class="token-display">
+<strong>${label}:</strong>
+<code>${token}</code>
+<button class="copy-btn" onclick="copyToClipboard('${token}')">📋 Copy Token</button>
+</div>`;
+        }
+
+        function showSuccess(element, message) {
+            element.innerHTML = `<div class="output success">${message}</div>`;
+        }
+
+        function showError(element, message) {
+            element.innerHTML = `<div class="output error">❌ Error: ${message}</div>`;
+        }
+
+        function showLoader(element) {
+            element.innerHTML = '<div class="loader active"></div>';
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Token copied to clipboard!');
+            });
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initializeAPI);
+    </script>
+</body>
+</html>
