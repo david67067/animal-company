@@ -1,11 +1,14 @@
 const express = require('express');
 const TokenManager = require('./tokenManager');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 const tokenManager = new TokenManager();
 
+// Middleware
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to verify access token
 const verifyToken = (req, res, next) => {
@@ -181,6 +184,16 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ============ SERVE HTML ============
+
+/**
+ * GET /
+ * Serve the web interface
+ */
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // ============ ERROR HANDLING ============
 
 /**
@@ -203,6 +216,17 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Animal Company Token Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`
+╔════════════════════════════════════════╗
+║     Animal Company Token Server        ║
+╚════════════════════════════════════════╝
+
+🚀 Server running on port ${PORT}
+🌐 Web interface: http://localhost:${PORT}
+📚 API docs: http://localhost:${PORT}
+
+Environment: ${process.env.NODE_ENV || 'development'}
+
+Press Ctrl+C to stop the server
+  `);
 });
