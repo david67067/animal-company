@@ -1,0 +1,31 @@
+{
+  "name": "animal-company",
+  "version": "1.0.0",
+  "description": "Animal Company - JWT token system for mods with player/mod ID authentication",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "jwt",
+    "token",
+    "authentication",
+    "mods",
+    "animal-company"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.1.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  }
+}
