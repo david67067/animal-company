@@ -1,28 +1,32 @@
 {
   "name": "animal-company",
-  "version": "1.0.0",
-  "description": "Animal Company - JWT token system for mods with player/mod ID authentication",
+  "version": "2.0.0",
+  "description": "Animal Company - JWT token system with Discord bot integration",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "bot": "node discord-bot.js",
+    "bot:register": "node register-commands.js",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "jwt",
-    "token",
     "authentication",
-    "mods",
+    "tokens",
+    "discord",
+    "bot",
     "animal-company"
   ],
-  "author": "",
+  "author": "Animal Company",
   "license": "MIT",
   "dependencies": {
+    "discord.js": "^14.14.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.1.2",
-    "dotenv": "^16.3.1"
+    "jsonwebtoken": "^9.1.2"
   },
   "devDependencies": {
     "jest": "^29.7.0",
