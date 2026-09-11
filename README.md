@@ -40,7 +40,7 @@ A complete JWT-based authentication system for managing player and mod tokens wi
 
 4. **Run the server**
    ```bash
-   npm start
+   npm run bot
    ```
 
 5. **Open in browser**
